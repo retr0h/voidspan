@@ -1,0 +1,23 @@
+---
+- name: converge
+  hosts: all
+  tasks:
+    - name: playbook | converge | start
+      ansible.builtin.debug:
+        msg: "playbook: converge → starting execution"
+
+    - name: playbook | converge | include role-1
+      ansible.builtin.include_role:
+        name: retr0h.role-1
+      vars:
+        role_1_message: "testing of Voidspan"
+        role_1_enabled: true
+        role_1_threshold: 42
+        role_1_items:
+          - foo
+          - bar
+          - baz
+
+    - name: playbook | converge | finished
+      ansible.builtin.debug:
+        msg: "playbook: converge → finished execution"

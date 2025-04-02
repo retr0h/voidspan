@@ -1,0 +1,18 @@
+---
+version: "3"
+
+includes:
+  go: https://raw.githubusercontent.com/osapi-io/osapi-io-taskfiles/refs/heads/main/go.yml
+
+tasks:
+  deps:
+    desc: Install dependencies
+    cmds:
+      - task: go:deps
+      - task: bats:deps
+
+  test:
+    desc: Test all
+    cmds:
+      - task: go:test
+      - task: bats:test

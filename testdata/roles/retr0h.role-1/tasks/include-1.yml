@@ -1,0 +1,8 @@
+---
+- name: role-1 | include-1 | start
+  ansible.builtin.debug:
+    msg: "role-1: include-1.yml → starting execution"
+
+- name: role-1 | include-1 | finished
+  ansible.builtin.debug:
+    msg: "role-1: include-1.yml → finished execution"

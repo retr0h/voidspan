@@ -1,0 +1,16 @@
+---
+- name: role-1 | main | start
+  ansible.builtin.debug:
+    msg: "role-1: main.yml → starting execution"
+
+- name: role-1 | main | debug loop
+  ansible.builtin.debug:
+    msg: "role-1: main.yml → looping over role_1_items: {{ item }}"
+  loop: "{{ role_1_items }}"
+
+- name: role-1 | include | include-1.yml
+  ansible.builtin.include_tasks: include-1.yml
+
+- name: role-1 | main | finished
+  ansible.builtin.debug:
+    msg: "role-1: main.yml → finished execution"
