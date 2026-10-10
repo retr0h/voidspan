@@ -32,18 +32,6 @@ import (
 
 type LoadRoleTasksPublicTestSuite struct {
 	suite.Suite
-
-	tmpDir string
-}
-
-func (s *LoadRoleTasksPublicTestSuite) SetupTest() {
-	dir, err := os.MkdirTemp("", "voidspan-role-test-*")
-	s.Require().NoError(err)
-	s.tmpDir = dir
-}
-
-func (s *LoadRoleTasksPublicTestSuite) TearDownTest() {
-	_ = os.RemoveAll(s.tmpDir)
 }
 
 func (s *LoadRoleTasksPublicTestSuite) TestLoadRoleTasks() {
@@ -69,13 +57,13 @@ func (s *LoadRoleTasksPublicTestSuite) TestLoadRoleTasks() {
 			}},
 			prepare: func(roleDir string) {
 				tasksDir := filepath.Join(roleDir, "tasks")
-				_ = os.MkdirAll(tasksDir, 0o755)
-				_ = os.WriteFile(filepath.Join(tasksDir, "main.yml"), []byte(`
+				s.Require().NoError(os.MkdirAll(tasksDir, 0o755))
+				s.Require().NoError(os.WriteFile(filepath.Join(tasksDir, "main.yml"), []byte(`
 ---
 - name: role1 | hello
   ansible.builtin.debug:
     msg: hi from role1
-`), 0o644)
+`), 0o644))
 			},
 		},
 		{
@@ -91,28 +79,29 @@ func (s *LoadRoleTasksPublicTestSuite) TestLoadRoleTasks() {
 			expectErrContains: "failed to parse tasks YAML",
 			prepare: func(roleDir string) {
 				tasksDir := filepath.Join(roleDir, "tasks")
-				_ = os.MkdirAll(tasksDir, 0o755)
-				_ = os.WriteFile(filepath.Join(tasksDir, "main.yml"), []byte(`
+				s.Require().NoError(os.MkdirAll(tasksDir, 0o755))
+				s.Require().NoError(os.WriteFile(filepath.Join(tasksDir, "main.yml"), []byte(`
 ---
 - name: bad
   ansible.builtin.debug
     msg: bad indentation
-`), 0o644)
+`), 0o644))
 			},
 		},
 	}
 
 	for _, tc := range tests {
 		s.Run(tc.name, func() {
-			roleDir := filepath.Join(s.tmpDir, tc.roleName)
+			tmpDir := s.T().TempDir()
+			roleDir := filepath.Join(tmpDir, tc.roleName)
 			if tc.prepare != nil {
 				tc.prepare(roleDir)
 			}
 
-			tasks, err := ansible.LoadRoleTasks(tc.roleName, s.tmpDir)
+			tasks, err := ansible.LoadRoleTasks(tc.roleName, tmpDir)
 
 			if tc.expectErr {
-				s.Error(err)
+				s.Require().Error(err)
 				if tc.expectErrContains != "" {
 					s.Contains(err.Error(), tc.expectErrContains)
 				}
@@ -120,7 +109,7 @@ func (s *LoadRoleTasksPublicTestSuite) TestLoadRoleTasks() {
 			}
 
 			s.Require().NoError(err)
-			s.Equal(len(tc.expected), len(tasks))
+			s.Require().Len(tasks, len(tc.expected))
 
 			for i := range tasks {
 				exp := tc.expected[i]
@@ -137,6 +126,8 @@ func (s *LoadRoleTasksPublicTestSuite) TestLoadRoleTasks() {
 	}
 }
 
-func TestLoadRoleTasksPublicTestSuite(t *testing.T) {
+func TestLoadRoleTasksPublicTestSuite(
+	t *testing.T,
+) {
 	suite.Run(t, new(LoadRoleTasksPublicTestSuite))
 }
