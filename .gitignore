@@ -1,3 +1,8 @@
+.claude/worktrees/
+.coverage/
+.just/
+.env
+.DS_Store
 cobertura.xml
 cover.out
 dist/
@@ -5,3 +10,6 @@ dist/
 result.xml
 .task/
 .venv/
+
+# Shared tool versions belong in this repository, even if globally ignored.
+!.mise.toml

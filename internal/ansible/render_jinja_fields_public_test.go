@@ -18,9 +18,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-// Copyright (c) 2025 John Dewey
-// SPDX-License-Identifier: MIT
-
 package ansible_test
 
 import (
@@ -42,17 +39,13 @@ func (s *RenderJinjaFieldsPublicTestSuite) SetupSuite() {
 	r, err := jinja2.NewJinja2("test-renderer", 1, jinja2.WithStrict(false))
 	s.Require().NoError(err)
 	s.renderer = r
-}
-
-func (s *RenderJinjaFieldsPublicTestSuite) TearDownSuite() {
-	s.renderer.Close()
+	s.T().Cleanup(r.Close)
 }
 
 func (s *RenderJinjaFieldsPublicTestSuite) TestRenderJinjaFields() {
 	tests := []struct {
 		name              string
 		input             map[string]interface{}
-		task              ansible.Task
 		vars              map[string]interface{}
 		expected          map[string]interface{}
 		expectErr         bool
@@ -118,6 +111,16 @@ func (s *RenderJinjaFieldsPublicTestSuite) TestRenderJinjaFields() {
 			expectErrContains: "unexpected end of template",
 		},
 		{
+			name: "nested invalid syntax preserves the field error",
+			input: map[string]interface{}{
+				"outer": map[string]interface{}{
+					"inner": "{{ invalid",
+				},
+			},
+			expectErr:         true,
+			expectErrContains: `failed to render field "inner"`,
+		},
+		{
 			name: "filter uppercase string",
 			input: map[string]interface{}{
 				"msg": "{{ 'voidspan' | upper }}",
@@ -162,20 +165,10 @@ func (s *RenderJinjaFieldsPublicTestSuite) TestRenderJinjaFields() {
 
 	for _, tc := range tests {
 		s.Run(tc.name, func() {
-			var input map[string]interface{}
-
-			if tc.input != nil {
-				input = tc.input
-			} else if tc.task.RawArgs != nil {
-				input = tc.task.RawArgs
-			} else {
-				s.FailNow("no input or task.RawArgs provided")
-			}
-
-			result, err := ansible.RenderJinjaFields(input, tc.vars, s.renderer)
+			result, err := ansible.RenderJinjaFields(tc.input, tc.vars, s.renderer)
 
 			if tc.expectErr {
-				s.Error(err)
+				s.Require().Error(err)
 				if tc.expectErrContains != "" {
 					s.Contains(err.Error(), tc.expectErrContains)
 				}
@@ -188,6 +181,8 @@ func (s *RenderJinjaFieldsPublicTestSuite) TestRenderJinjaFields() {
 	}
 }
 
-func TestRenderJinjaFieldsPublicTestSuite(t *testing.T) {
+func TestRenderJinjaFieldsPublicTestSuite(
+	t *testing.T,
+) {
 	suite.Run(t, new(RenderJinjaFieldsPublicTestSuite))
 }

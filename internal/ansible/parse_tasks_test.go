@@ -31,18 +31,6 @@ import (
 
 type ParseTasksTestSuite struct {
 	suite.Suite
-
-	tmpDir string
-}
-
-func (s *ParseTasksTestSuite) SetupTest() {
-	dir, err := os.MkdirTemp("", "voidspan-parse-tasks-*")
-	s.Require().NoError(err)
-	s.tmpDir = dir
-}
-
-func (s *ParseTasksTestSuite) TearDownTest() {
-	_ = os.RemoveAll(s.tmpDir)
 }
 
 func (s *ParseTasksTestSuite) TestParseTasks() {
@@ -150,9 +138,7 @@ func (s *ParseTasksTestSuite) TestParseTasks() {
   ansible.builtin.debug:
     msg: hi from included
 `), 0o644)
-				if err != nil {
-					panic(err)
-				}
+				s.Require().NoError(err)
 			},
 		},
 		{
@@ -169,9 +155,7 @@ func (s *ParseTasksTestSuite) TestParseTasks() {
   ansible.builtin.debug
     msg: "oops
 `), 0o644)
-				if err != nil {
-					panic(err)
-				}
+				s.Require().NoError(err)
 			},
 		},
 		{
@@ -188,9 +172,7 @@ func (s *ParseTasksTestSuite) TestParseTasks() {
   ansible.builtin.include_tasks:
     foo: bar
 `), 0o644)
-				if err != nil {
-					panic(err)
-				}
+				s.Require().NoError(err)
 			},
 		},
 		{
@@ -213,19 +195,20 @@ func (s *ParseTasksTestSuite) TestParseTasks() {
 
 	for _, tc := range tests {
 		s.Run(tc.name, func() {
+			tmpDir := s.T().TempDir()
 			if tc.prepare != nil {
-				tc.prepare(s.tmpDir)
+				tc.prepare(tmpDir)
 			}
 
 			var rawTasks []map[string]interface{}
 			err := yaml.Unmarshal([]byte(tc.taskYAML), &rawTasks)
 			s.Require().NoError(err)
 
-			sourcePath := filepath.Join(s.tmpDir, "source.yml")
-			tasks, err := parseTasks(rawTasks, sourcePath, filepath.Join(s.tmpDir, "roles"))
+			sourcePath := filepath.Join(tmpDir, "source.yml")
+			tasks, err := parseTasks(rawTasks, sourcePath, filepath.Join(tmpDir, "roles"))
 
 			if tc.expectErr {
-				s.Error(err)
+				s.Require().Error(err)
 				if tc.expectErrContains != "" {
 					s.Contains(err.Error(), tc.expectErrContains)
 				}
@@ -233,7 +216,7 @@ func (s *ParseTasksTestSuite) TestParseTasks() {
 			}
 
 			s.Require().NoError(err)
-			s.Equal(len(tc.expected), len(tasks))
+			s.Require().Len(tasks, len(tc.expected))
 
 			for i := range tasks {
 				exp := tc.expected[i]
@@ -250,6 +233,8 @@ func (s *ParseTasksTestSuite) TestParseTasks() {
 	}
 }
 
-func TestParseTasksSuite(t *testing.T) {
+func TestParseTasksTestSuite(
+	t *testing.T,
+) {
 	suite.Run(t, new(ParseTasksTestSuite))
 }

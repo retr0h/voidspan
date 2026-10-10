@@ -1,0 +1,28 @@
+version: 2
+
+project_name: voidspan
+
+builds:
+  - main: ./main.go
+    binary: voidspan
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w
+
+archives:
+  - formats: [tar.gz]
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: github
+  sort: asc
+
+release:
+  github:
+    owner: retr0h
+    name: voidspan

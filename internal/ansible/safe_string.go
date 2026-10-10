@@ -20,58 +20,11 @@
 
 package ansible
 
-import (
-	"testing"
-
-	"github.com/stretchr/testify/suite"
-)
-
-type PlaybookTestSuite struct {
-	suite.Suite
-}
-
-func (s *PlaybookTestSuite) TestSafeString() {
-	tests := []struct {
-		name     string
-		input    interface{}
-		expected string
-	}{
-		{
-			name:     "String input",
-			input:    "hello",
-			expected: "hello",
-		},
-		{
-			name:     "Int input",
-			input:    42,
-			expected: "",
-		},
-		{
-			name:     "Nil input",
-			input:    nil,
-			expected: "",
-		},
-		{
-			name:     "Bool input",
-			input:    true,
-			expected: "",
-		},
-		{
-			name:     "Empty string input",
-			input:    "",
-			expected: "",
-		},
+func safeString(
+	v interface{},
+) string {
+	if s, ok := v.(string); ok {
+		return s
 	}
-
-	for _, tc := range tests {
-		s.Run(tc.name, func() {
-			got := safeString(tc.input)
-
-			s.Equal(tc.expected, got)
-		})
-	}
-}
-
-func TestPlaybookTestSuite(t *testing.T) {
-	suite.Run(t, new(PlaybookTestSuite))
+	return ""
 }

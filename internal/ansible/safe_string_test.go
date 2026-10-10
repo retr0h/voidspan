@@ -20,9 +20,60 @@
 
 package ansible
 
-func safeString(v interface{}) string {
-	if s, ok := v.(string); ok {
-		return s
+import (
+	"testing"
+
+	"github.com/stretchr/testify/suite"
+)
+
+type SafeStringTestSuite struct {
+	suite.Suite
+}
+
+func (s *SafeStringTestSuite) TestSafeString() {
+	tests := []struct {
+		name     string
+		input    interface{}
+		expected string
+	}{
+		{
+			name:     "String input",
+			input:    "hello",
+			expected: "hello",
+		},
+		{
+			name:     "Int input",
+			input:    42,
+			expected: "",
+		},
+		{
+			name:     "Nil input",
+			input:    nil,
+			expected: "",
+		},
+		{
+			name:     "Bool input",
+			input:    true,
+			expected: "",
+		},
+		{
+			name:     "Empty string input",
+			input:    "",
+			expected: "",
+		},
 	}
-	return ""
+
+	for _, tc := range tests {
+		s.Run(tc.name, func() {
+			got := safeString(tc.input)
+
+			s.Equal(tc.expected, got)
+		})
+	}
+}
+
+func TestSafeStringTestSuite(
+	t *testing.T,
+) {
+	suite.Run(t, new(SafeStringTestSuite))
 }

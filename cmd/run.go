@@ -29,11 +29,12 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/retr0h/voidspan/internal/ansible"
+	"github.com/retr0h/voidspan/internal/cli"
 )
 
 var runCmd = &cobra.Command{
 	Use:   "run [playbook.yml]",
-	Short: "Run an Ansible-style playbook with Voidspan",
+	Short: "Inspect an Ansible-style playbook",
 	Run: func(_ *cobra.Command, _ []string) {
 		playbookPath := viper.GetString("playbook")
 		rolesPath := viper.GetString("roles-path")
@@ -48,15 +49,16 @@ var runCmd = &cobra.Command{
 			log.Fatalf("failed to parse playbook: %v", err)
 		}
 
+		theme := cli.NewTheme(os.Stdout, color)
 		for _, play := range plays {
-			fmt.Printf("▶ Play: %s (hosts: %s)\n", play.Name, play.Hosts)
+			fmt.Println(theme.Title(fmt.Sprintf("▶ Play: %s (hosts: %s)", play.Name, play.Hosts)))
 			for _, task := range play.Tasks {
-				fmt.Printf("  ▸ Task: %s\n", task.Name)
-				fmt.Printf("    Module: %s\n", task.Module)
-				fmt.Printf("    Args: %+v\n", task.RawArgs)
-				fmt.Printf("    Vars: %+v\n", task.Vars)
+				fmt.Printf("  %s\n", theme.Accent.Render("▸ Task: "+task.Name))
+				fmt.Printf("    %s %s\n", theme.Mute.Render("Module:"), task.Module)
+				fmt.Printf("    %s %+v\n", theme.Mute.Render("Args:"), task.RawArgs)
+				fmt.Printf("    %s %+v\n", theme.Mute.Render("Vars:"), task.Vars)
 				if task.Loop != "" {
-					fmt.Printf("    Loop: %s\n", task.Loop)
+					fmt.Printf("    %s %s\n", theme.Mute.Render("Loop:"), task.Loop)
 				}
 
 			}

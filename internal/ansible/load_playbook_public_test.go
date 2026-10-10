@@ -32,18 +32,6 @@ import (
 
 type LoadPlaybookPublicTestSuite struct {
 	suite.Suite
-
-	tmpDir string
-}
-
-func (s *LoadPlaybookPublicTestSuite) SetupTest() {
-	dir, err := os.MkdirTemp("", "voidspan-test-*")
-	s.Require().NoError(err)
-	s.tmpDir = dir
-}
-
-func (s *LoadPlaybookPublicTestSuite) TearDownTest() {
-	_ = os.RemoveAll(s.tmpDir)
 }
 
 func (s *LoadPlaybookPublicTestSuite) TestLoadPlaybook() {
@@ -197,24 +185,25 @@ func (s *LoadPlaybookPublicTestSuite) TestLoadPlaybook() {
 			}},
 			prepare: func(dir string) {
 				roleDir := filepath.Join(dir, "roles", "myrole", "tasks")
-				_ = os.MkdirAll(roleDir, 0o755)
-				_ = os.WriteFile(filepath.Join(roleDir, "main.yml"), []byte(`
+				s.Require().NoError(os.MkdirAll(roleDir, 0o755))
+				s.Require().NoError(os.WriteFile(filepath.Join(roleDir, "main.yml"), []byte(`
 ---
 - name: role | main | test
   ansible.builtin.debug:
     msg: "from role"
-`), 0o644)
+`), 0o644))
 			},
 		},
 	}
 
 	for _, tc := range tests {
 		s.Run(tc.name, func() {
+			tmpDir := s.T().TempDir()
 			if tc.prepare != nil {
-				tc.prepare(s.tmpDir)
+				tc.prepare(tmpDir)
 			}
 
-			playbookPath := filepath.Join(s.tmpDir, "playbook.yml")
+			playbookPath := filepath.Join(tmpDir, "playbook.yml")
 			err := os.WriteFile(playbookPath, []byte(tc.playbookYAML), 0o644)
 			s.Require().NoError(err)
 
@@ -224,11 +213,11 @@ func (s *LoadPlaybookPublicTestSuite) TestLoadPlaybook() {
 			actual, err := ansible.LoadPlaybook(
 				data,
 				playbookPath,
-				filepath.Join(s.tmpDir, "roles"),
+				filepath.Join(tmpDir, "roles"),
 			)
 
 			if tc.expectErr {
-				s.Error(err)
+				s.Require().Error(err)
 				if tc.expectErrContains != "" {
 					s.Contains(err.Error(), tc.expectErrContains)
 				}
@@ -236,12 +225,12 @@ func (s *LoadPlaybookPublicTestSuite) TestLoadPlaybook() {
 			}
 
 			s.Require().NoError(err)
-			s.Equal(len(tc.expected), len(actual))
+			s.Require().Len(actual, len(tc.expected))
 
 			for i := range actual {
 				s.Equal(tc.expected[i].Name, actual[i].Name)
 				s.Equal(tc.expected[i].Hosts, actual[i].Hosts)
-				s.Equal(len(tc.expected[i].Tasks), len(actual[i].Tasks))
+				s.Require().Len(actual[i].Tasks, len(tc.expected[i].Tasks))
 
 				for j := range actual[i].Tasks {
 					exp := tc.expected[i].Tasks[j]
@@ -259,6 +248,8 @@ func (s *LoadPlaybookPublicTestSuite) TestLoadPlaybook() {
 	}
 }
 
-func TestLoadPlaybookPublicTestSuite(t *testing.T) {
+func TestLoadPlaybookPublicTestSuite(
+	t *testing.T,
+) {
 	suite.Run(t, new(LoadPlaybookPublicTestSuite))
 }

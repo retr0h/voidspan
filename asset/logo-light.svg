@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 80" width="480" height="80" role="img" aria-label="voidspan">
+  <title>voidspan</title>
+  <!-- Matches the wordmark in internal/cli/theme.go, without a font dependency. -->
+  <rect x="8" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="40" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="72" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="88" y="8" width="16" height="16" fill="#57606a"/>
+  <rect x="104" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="136" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="168" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="184" y="8" width="16" height="16" fill="#57606a"/>
+  <rect x="200" y="24" width="16" height="16" fill="#57606a"/>
+  <rect x="232" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="248" y="8" width="16" height="16" fill="#57606a"/>
+  <rect x="280" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="296" y="8" width="16" height="16" fill="#57606a"/>
+  <rect x="312" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="344" y="24" width="16" height="16" fill="#57606a"/>
+  <rect x="360" y="8" width="16" height="16" fill="#57606a"/>
+  <rect x="376" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="408" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="424" y="24" width="16" height="16" fill="#57606a"/>
+  <rect x="440" y="8" width="16" height="32" fill="#57606a" opacity="0.25"/>
+  <rect x="456" y="8" width="16" height="32" fill="#57606a"/>
+  <rect x="8" y="40" width="16" height="16" fill="#0b7285"/>
+  <rect x="24" y="56" width="16" height="16" fill="#0b7285"/>
+  <rect x="40" y="40" width="16" height="16" fill="#0b7285"/>
+  <rect x="72" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="88" y="56" width="16" height="16" fill="#0b7285"/>
+  <rect x="104" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="136" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="168" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="184" y="56" width="16" height="16" fill="#0b7285"/>
+  <rect x="200" y="40" width="16" height="16" fill="#0b7285"/>
+  <rect x="232" y="56" width="16" height="16" fill="#0b7285"/>
+  <rect x="248" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="280" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="296" y="40" width="16" height="16" fill="#0b7285"/>
+  <rect x="312" y="40" width="16" height="16" fill="#0b7285"/>
+  <rect x="344" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="360" y="40" width="16" height="16" fill="#0b7285"/>
+  <rect x="376" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="408" y="40" width="16" height="32" fill="#0b7285"/>
+  <rect x="424" y="40" width="16" height="32" fill="#0b7285" opacity="0.25"/>
+  <rect x="440" y="40" width="16" height="16" fill="#0b7285"/>
+  <rect x="456" y="40" width="16" height="32" fill="#0b7285"/>
+</svg>

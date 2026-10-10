@@ -1,2 +1,2 @@
-mock.go
-connect_wrapper.go
+^github\.com/retr0h/voidspan/main\.go:
+^github\.com/retr0h/voidspan/cmd/
