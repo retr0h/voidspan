@@ -7,7 +7,7 @@ require (
 	github.com/kluctl/kluctl/lib v0.0.0-20250102095521-d659f6ac0b21
 	github.com/muesli/termenv v0.16.0
 	github.com/spf13/cobra v1.10.2
-	github.com/spf13/pflag v1.0.9
+	github.com/spf13/pflag v1.0.10
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/term v0.46.0
