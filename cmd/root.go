@@ -21,23 +21,36 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
+
+	"github.com/retr0h/voidspan/internal/cli"
 )
+
+var color cli.ColorMode = "auto"
 
 var rootCmd = &cobra.Command{
 	Use:   "voidspan",
-	Short: "Voidspan is a Go-native Ansible playbook interpreter",
-	Long: `Voidspan parses and runs Ansible-flavored YAML playbooks using native
-Go logic, no Python required.
-`,
+	Short: "Inspect Ansible-style playbooks with Go",
+	Long:  "Parse Ansible-style playbooks, expand task includes and roles, and inspect their tasks.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
+	styleHelp(rootCmd)
+	rootCmd.SilenceErrors = true
+	rootCmd.CompletionOptions.HiddenDefaultCmd = true
+	if err := rootCmd.Execute(); err != nil {
+		out := rootCmd.ErrOrStderr()
+		theme := cli.NewTheme(out, color)
+		_, _ = fmt.Fprintf(out, "\n  %s %s\n\n", theme.Err.Render("Error:"), err)
+		os.Exit(1)
+	}
 }
 
 func init() {
-	// Add commands here
+	rootCmd.PersistentFlags().Var(&color, "color", "terminal color: auto, always, or never")
 }

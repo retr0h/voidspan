@@ -1,5 +1,7 @@
-# Refer to golangci-lint's example config file for more options and information:
-# https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+# golangci-lint v2 configuration.
+# https://golangci-lint.run/docs/configuration/file/
+
+version: "2"
 
 run:
   timeout: 5m
@@ -9,23 +11,42 @@ linters:
   enable:
     - errcheck
     - errname
-    - goimports
     - govet
+    - ineffassign
     - prealloc
     - predeclared
     - revive
     - staticcheck
+    - unused
 
-linters-settings:
-  revive:
-    rules:
-      - name: package-comments
-        disabled: true
+  settings:
+    revive:
+      rules:
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: exported
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: range
+        - name: receiver-naming
+        - name: superfluous-else
+        - name: time-naming
+        - name: unused-parameter
+        - name: var-naming
+
+  exclusions:
+    presets:
+      - comments
+      - std-error-handling
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
 
 issues:
-  exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0
-  exclude-dirs:
-    - ../../.local
-    - ../../go
+  uniq-by-line: false
