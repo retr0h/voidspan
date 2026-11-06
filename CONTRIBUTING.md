@@ -18,9 +18,9 @@ Install [mise](https://mise.jdx.dev/), then install the tools declared in
 mise install
 ```
 
-The development toolchain pins Go 1.27.1 and just 1.43.1, plus uv, fd, ripgrep,
+The development toolchain pins Go 1.27.3 and just 1.43.1, plus uv, fd, ripgrep,
 and jaq. CI installs the same tools through mise. The application module
-declares Go 1.24 as its minimum version.
+declares Go 1.27.3 as its minimum version.
 
 [just](https://just.systems/) runs development tasks.
 [uv](https://docs.astral.sh/uv/) runs the Markdown formatter. Use `fd`, `rg`,
