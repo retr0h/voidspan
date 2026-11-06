@@ -227,7 +227,8 @@ rewriting Go source.
 
 ## Pull requests
 
-Use a branch and Conventional Commit messages such as
+Use a branch with a short, descriptive name such as `repo-setup`, without a
+personal prefix, and Conventional Commit messages such as
 `docs: clarify playbook inspection` or `fix: resolve nested task includes`.
 Describe the behavior changed, link related issues, and say which checks ran.
 Disclose AI assistance as the [policy](AI_POLICY.md) requires.
